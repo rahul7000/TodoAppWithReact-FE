@@ -12,19 +12,19 @@ class HelloWorldService {
    }
 
    executeHelloWorldPathVariableService(name) {
-      
+
       var url = `http://localhost:8080/hello-world/${name}`
+      //implemented using interceptor in AuthenricationService
+      //    let username = 'rahrajpu'
+      //    let password = 'dummy'
 
-   //    let username = 'rahrajpu'
-   //    let password = 'dummy'
+      //    let basicAuth = 'Basic ' + window.btoa(username + ":" + password)
 
-   //    let basicAuth = 'Basic ' + window.btoa(username + ":" + password)
-
-   //    var config = {
-   //       "headers": {
-   //           "Authorization": basicAuth
-   //       }
-   //   };
+      //    var config = {
+      //       "headers": {
+      //           "Authorization": basicAuth
+      //       }
+      //   };
 
       //tick is used instead of single quote
       return axios.get(url);
