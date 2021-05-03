@@ -1,20 +1,34 @@
 //const { default: axios } = require("axios");
 import axios from 'axios'
 
-class HelloWorldService{
+class HelloWorldService {
 
-    executeHelloWorldService(){
-       return  axios.get('http://localhost:8080/hello-world')
-    }
+   executeHelloWorldService() {
+      return axios.get('http://localhost:8080/hello-world')
+   }
 
-    executeHelloWorldBeanService(){
-        return  axios.get('http://localhost:8080/hello-world-bean')
-     }
+   executeHelloWorldBeanService() {
+      return axios.get('http://localhost:8080/hello-world-bean')
+   }
 
-     executeHelloWorldPathVariableService(name){
-         //tick is used instead of single quote
-        return  axios.get(`http://localhost:8080/hello-world/${name}`)
-     }
+   executeHelloWorldPathVariableService(name) {
+      
+      var url = `http://localhost:8080/hello-world/${name}`
+
+   //    let username = 'rahrajpu'
+   //    let password = 'dummy'
+
+   //    let basicAuth = 'Basic ' + window.btoa(username + ":" + password)
+
+   //    var config = {
+   //       "headers": {
+   //           "Authorization": basicAuth
+   //       }
+   //   };
+
+      //tick is used instead of single quote
+      return axios.get(url);
+   }
 
 }
 
