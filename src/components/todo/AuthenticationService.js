@@ -1,35 +1,54 @@
 import axios from 'axios'
+import {API_URL,USER_SESSION_ATTRIBUTE_NAME} from '../../Constants.js'
 
 class AuthenticationService {
 
-    executeBasicAuthService(username,password){
-        return axios.get('http://localhost:8080/basicauth',{
-            headers:{
-                authorization:this.createBasicAuthToken(username,password)
+    executeBasicAuthService(username, password) {
+        return axios.get(`${API_URL}/basicauth`, {
+            headers: {
+                authorization: this.createBasicAuthToken(username, password)
             }
         })
     }
 
-    createBasicAuthToken(username,password){
+    executeJWTAuthService(username, password) {
+        var body = {
+            username:username,
+            password:password
+        }
+        console.log(body)
+        return axios.post(`${API_URL}/authenticate`, body)
+    }
+
+    createBasicAuthToken(username, password) {
         let basicAuth = 'Basic ' + window.btoa(username + ":" + password)
         return basicAuth
 
     }
 
-    registerSuccessfulLogin(username, password) {
-        sessionStorage.setItem("authenticatedUser", username)
+    createJWTAuthToken(token) {
+        let jwtAuth = 'Bearer ' + token
+        return jwtAuth
+    }
 
-        
-        this.setupAxiosInterceptor(this.createBasicAuthToken(username,password))
+    registerSuccessfulLogin(username, password) {
+        sessionStorage.setItem(USER_SESSION_ATTRIBUTE_NAME, username)
+        this.setupAxiosInterceptor(this.createBasicAuthToken(username, password))
+    }
+
+    registerSuccessfulLoginForJWT(username, token) {
+        sessionStorage.setItem(USER_SESSION_ATTRIBUTE_NAME, username)
+
+        this.setupAxiosInterceptor(this.createJWTAuthToken(token))
     }
 
     logout() {
-        sessionStorage.removeItem("authenticatedUser")
+        sessionStorage.removeItem(USER_SESSION_ATTRIBUTE_NAME)
     }
 
     isUserLoggedIn() {
 
-        let user = sessionStorage.getItem("authenticatedUser")
+        let user = sessionStorage.getItem(USER_SESSION_ATTRIBUTE_NAME)
 
         if (user === null) {
             return false
@@ -40,7 +59,7 @@ class AuthenticationService {
 
     loggedInUserName() {
 
-        let user = sessionStorage.getItem("authenticatedUser")
+        let user = sessionStorage.getItem(USER_SESSION_ATTRIBUTE_NAME)
 
         if (user === null) {
             return ''
@@ -49,11 +68,11 @@ class AuthenticationService {
 
     }
 
-    setupAxiosInterceptor(basicAuth) {
+    setupAxiosInterceptor(authHeaderToken) {
 
         axios.interceptors.request.use((config) => {
             if (this.isUserLoggedIn()) {
-                config.headers.Authorization = basicAuth
+                config.headers.Authorization = authHeaderToken
             }
             return config
         })
